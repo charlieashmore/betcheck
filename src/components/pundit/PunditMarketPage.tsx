@@ -9,7 +9,6 @@ import {
   PUNDIT_MARKETS,
   chartPaths,
   ticketCheckBody,
-  ticketPrice,
   type OverlayTicket,
   type PunditSide,
 } from "@/lib/demo/pundit";

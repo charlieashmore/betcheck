@@ -1,6 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { Link } from "@tanstack/react-router";
-import { AlertTriangle, Check, LoaderCircle, X } from "lucide-react";
+import { LoaderCircle, X } from "lucide-react";
 import { LogoMark } from "@/components/SiteChrome";
 import { gbp } from "@/lib/demo/data";
 import { ticketPrice, type OverlayTicket } from "@/lib/demo/pundit";
