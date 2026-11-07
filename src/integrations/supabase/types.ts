@@ -14,6 +14,259 @@ export type Database = {
   }
   public: {
     Tables: {
+      bc_checks: {
+        Row: {
+          created_at: string
+          id: string
+          inputs: Json
+          market_title: string | null
+          platform: string | null
+          result: Json
+          rules_version: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          inputs: Json
+          market_title?: string | null
+          platform?: string | null
+          result: Json
+          rules_version: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          inputs?: Json
+          market_title?: string | null
+          platform?: string | null
+          result?: Json
+          rules_version?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bc_checks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "bc_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bc_classifications: {
+        Row: {
+          category: string
+          confidence: number
+          label: string
+          reasons: Json
+          source: string
+          transaction_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          confidence: number
+          label: string
+          reasons?: Json
+          source: string
+          transaction_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          confidence?: number
+          label?: string
+          reasons?: Json
+          source?: string
+          transaction_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bc_classifications_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: true
+            referencedRelation: "bc_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bc_classifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "bc_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bc_coach_messages: {
+        Row: {
+          created_at: string
+          facts: Json
+          id: string
+          message: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          facts: Json
+          id?: string
+          message: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          facts?: Json
+          id?: string
+          message?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bc_coach_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "bc_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bc_limits: {
+        Row: {
+          pending_effective_at: string | null
+          pending_increase: Json | null
+          per_bet_max: number | null
+          self_exclusion_until: string | null
+          updated_at: string
+          user_id: string
+          weekly_gambling_limit: number | null
+        }
+        Insert: {
+          pending_effective_at?: string | null
+          pending_increase?: Json | null
+          per_bet_max?: number | null
+          self_exclusion_until?: string | null
+          updated_at?: string
+          user_id: string
+          weekly_gambling_limit?: number | null
+        }
+        Update: {
+          pending_effective_at?: string | null
+          pending_increase?: Json | null
+          per_bet_max?: number | null
+          self_exclusion_until?: string | null
+          updated_at?: string
+          user_id?: string
+          weekly_gambling_limit?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bc_limits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "bc_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bc_merchant_feedback: {
+        Row: {
+          is_gambling: boolean
+          merchant_key: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          is_gambling: boolean
+          merchant_key: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          is_gambling?: boolean
+          merchant_key?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bc_merchant_feedback_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "bc_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bc_profiles: {
+        Row: {
+          created_at: string
+          current_balance: number
+          first_name: string | null
+          id: string
+          language: string
+          plain_language: boolean
+        }
+        Insert: {
+          created_at?: string
+          current_balance?: number
+          first_name?: string | null
+          id: string
+          language?: string
+          plain_language?: boolean
+        }
+        Update: {
+          created_at?: string
+          current_balance?: number
+          first_name?: string | null
+          id?: string
+          language?: string
+          plain_language?: boolean
+        }
+        Relationships: []
+      }
+      bc_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string
+          id: string
+          mcc: string | null
+          posted_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description: string
+          id?: string
+          mcc?: string | null
+          posted_at: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string
+          id?: string
+          mcc?: string | null
+          posted_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bc_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "bc_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checks: {
         Row: {
           affordability_result: Json
