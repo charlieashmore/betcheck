@@ -87,7 +87,7 @@ export function runBenchmark(input: BenchmarkInput, cfg: BenchmarkConfig = BENCH
 
   const details: SourceDetail[] = sources.map((s) => {
     const fairs = removeMargin(s.odds);
-    const yesFair = fairs[s.targetIndex];
+    const yesFair = fairs[s.targetIndex] ?? 0;
     return { source: s.source, fair: side === "YES" ? yesFair : 1 - yesFair, ageSeconds: ageSeconds(s.fetchedAt, now) };
   });
 

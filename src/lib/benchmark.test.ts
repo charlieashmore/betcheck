@@ -11,7 +11,7 @@ describe("odds conversion", () => {
     expect(() => impliedProbability(1)).toThrow();
   });
   it("1.80/2.10 removes margin to ~53.8% / 46.2%", () => {
-    const [a, b] = removeMargin([1.8, 2.1]);
+    const [a = 0, b = 0] = removeMargin([1.8, 2.1]);
     expect(a * 100).toBeCloseTo(53.85, 1);
     expect(b * 100).toBeCloseTo(46.15, 1);
     expect(a + b).toBeCloseTo(1, 10);

@@ -12,7 +12,7 @@ export async function ingestMock(admin: Admin, fixtureId: string, kalshiTicker: 
     { source: "kalshi", market_id: kalshiTicker, outcome: "YES", price_or_odds: m.kalshiYes, fetched_at: at(m.kalshiAgeSeconds) },
     { source: "kalshi", market_id: kalshiTicker, outcome: "NO", price_or_odds: m.kalshiNo, fetched_at: at(m.kalshiAgeSeconds) },
     ...m.books.flatMap((b) =>
-      b.odds.map((o, i) => ({ source: b.source, market_id: bookMarketId, outcome: BOOK_OUTCOMES[i], price_or_odds: o, fetched_at: at(b.ageSeconds) })),
+      b.odds.map((o, i) => ({ source: b.source, market_id: bookMarketId, outcome: BOOK_OUTCOMES[i] ?? "home", price_or_odds: o, fetched_at: at(b.ageSeconds) })),
     ),
   ];
   const { error } = await admin.from("price_snapshots").insert(rows);
