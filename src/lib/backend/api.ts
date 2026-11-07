@@ -1,5 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
 import { callBc, listChecks, type BcFn } from "./bc.functions";
+import type { PersonaKey } from "./personas";
+
+/** Active demo persona; set by the demo store. Query cache is cleared on switch. */
+let persona: PersonaKey = "priya";
+export const setActivePersona = (p: PersonaKey) => { persona = p; };
+export const getActivePersona = () => persona;
 
 // Shapes returned by the backend team's API (see their README).
 export type Band = { date: string; p10: number; p50: number; p90: number };
@@ -37,7 +43,7 @@ export type StakeRes = {
 };
 
 const bc = async <T,>(fn: BcFn, body?: Record<string, unknown>, method: "GET" | "POST" = "POST"): Promise<T> =>
-  JSON.parse(await callBc({ data: body ? { fn, body, method } : { fn, method } })) as T;
+  JSON.parse(await callBc({ data: body ? { fn, body, method, persona } : { fn, method, persona } })) as T;
 
 export const api = {
   coach: (plain: boolean) => bc<CoachRes>("coach", { plain_language: plain }),
@@ -53,7 +59,7 @@ export const q = {
   coach: (plain: boolean) => queryOptions({ queryKey: ["bc", "coach", plain], queryFn: () => api.coach(plain), staleTime: 60_000 }),
   classify: () => queryOptions({ queryKey: ["bc", "classify"], queryFn: api.classify, staleTime: 60_000 }),
   limits: () => queryOptions({ queryKey: ["bc", "limits"], queryFn: api.limits }),
-  checks: () => queryOptions({ queryKey: ["bc", "checks"], queryFn: () => listChecks() }),
+  checks: () => queryOptions({ queryKey: ["bc", "checks"], queryFn: () => listChecks({ data: { persona } }) }),
 };
 
 export const pauseHoursLeft = (l: LimitsRow | null | undefined, now = Date.now()) => {
