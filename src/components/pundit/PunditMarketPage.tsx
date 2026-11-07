@@ -1,3 +1,5 @@
+import { PERSONAS } from "@/lib/backend/personas";
+import { getActivePersona } from "@/lib/backend/api";
 import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
@@ -114,7 +116,7 @@ export function PunditMarketPage({ initialMarketId }: { initialMarketId: string 
         <nav aria-label="Pundit market categories" className="hidden items-center gap-4 text-sm text-pundit-muted md:flex">
           <span className="text-pundit-foreground">Sport</span><span>Politics</span><span>Economy</span><span>Culture</span>
         </nav>
-        <div className="ml-auto text-sm text-pundit-muted">Demo wallet: <strong className="text-pundit-foreground num">£412.60</strong> · Priya</div>
+        <div className="ml-auto text-sm text-pundit-muted">Demo wallet: <strong className="text-pundit-foreground num">£412.60</strong> · {PERSONAS[getActivePersona()].name}</div>
         <button
           type="button"
           onClick={() => toast("BetCheck is watching this page. It checks your stake against your budget before you buy.")}

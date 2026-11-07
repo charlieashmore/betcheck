@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Limits } from "./checkStake";
+import { setActivePersona } from "@/lib/backend/api";
+import type { PersonaKey } from "@/lib/backend/personas";
 
 export type CheckRecord = { id: string; at: string; market: string; stake: number; verdict: "not-affordable" | "overvalued" | "ok"; hiddenCost: number };
 
@@ -12,6 +14,7 @@ export type DemoState = {
   checks: CheckRecord[];
   plainLanguage: boolean;
   language: string;
+  persona: PersonaKey;
 };
 
 const initial: DemoState = {
@@ -27,6 +30,7 @@ const initial: DemoState = {
   ],
   plainLanguage: true,
   language: "en",
+  persona: "priya",
 };
 
 const KEY = "betcheck-demo-v1";
@@ -67,6 +71,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     }
   }, [now, state.pendingRaise, update]);
 
+  setActivePersona(state.persona);
   return <DemoCtx.Provider value={{ state, update, reset, now }}>{children}</DemoCtx.Provider>;
 }
 
