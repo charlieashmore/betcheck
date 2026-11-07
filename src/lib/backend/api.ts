@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { callBc, listChecks } from "./bc.functions";
+import { callBc, listChecks, type BcFn } from "./bc.functions";
 
 // Shapes returned by the backend team's API (see their README).
 export type Band = { date: string; p10: number; p50: number; p90: number };
@@ -36,8 +36,8 @@ export type StakeRes = {
   disclaimer: string;
 };
 
-const bc = <T,>(fn: Parameters<typeof callBc>[0]["data"]["fn"], body?: Record<string, unknown>, method: "GET" | "POST" = "POST") =>
-  callBc({ data: { fn, body, method } }) as Promise<T>;
+const bc = async <T,>(fn: BcFn, body?: Record<string, unknown>, method: "GET" | "POST" = "POST"): Promise<T> =>
+  JSON.parse(await callBc({ data: body ? { fn, body, method } : { fn, method } })) as T;
 
 export const api = {
   coach: (plain: boolean) => bc<CoachRes>("coach", { plain_language: plain }),

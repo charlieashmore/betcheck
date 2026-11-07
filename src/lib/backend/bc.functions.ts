@@ -22,12 +22,12 @@ export const callBc = createServerFn({ method: "POST" })
     const req = new Request(`http://internal/${data.fn}`, {
       method: data.method,
       headers: { "content-type": "application/json" },
-      body: data.method === "POST" ? JSON.stringify(data.body ?? {}) : undefined,
+      body: data.method === "POST" ? JSON.stringify(data.body ?? {}) : null,
     });
     const res = await handler(req);
     const text = await res.text();
     if (!res.ok) throw new Error(`Backend ${data.fn} failed [${res.status}]: ${text}`);
-    return JSON.parse(text) as Record<string, unknown>;
+    return text; // JSON string; parsed on the caller side
   });
 
 /** Recent stake checks from the append-only audit log. */

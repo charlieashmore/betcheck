@@ -24,7 +24,7 @@ function AccountPage() {
   const checks = useQuery(q.checks());
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <PageTitle title="Account" sub={`$Priya · ${state.onboarded ? profile.bank : "No bank connected"}`} />
+      <PageTitle title="Account" sub={`$Priya · ${state.onboarded ? "Monzo (demo)" : "No bank connected"}`} />
       <div className="grid gap-6 md:grid-cols-2">
         <Panel>
           <div className="flex items-center justify-between gap-4">
