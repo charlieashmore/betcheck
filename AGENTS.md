@@ -35,3 +35,4 @@ use the editor.
 - Limits and exclusions are written only through server functions with the admin client (RLS allows select only), so the 48h raise delay and self-exclusion can't be bypassed from the browser.
 - `checks` is append-only (DB trigger blocks update/delete) — it is the audit log.
 - Eligible-country list exists in both `config.ts` and `public.handle_new_user()`; change both together.
+- AI reflection coach and financial time-travel projection are separate modules (`src/lib/coach.functions.ts`, pure `src/lib/forecasting.ts`) so the advisory rules engine stays deterministic and testable.
