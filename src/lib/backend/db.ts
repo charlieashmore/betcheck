@@ -21,9 +21,12 @@ export async function admin(): Promise<SupabaseClient> {
 }
 
 export const DEMO_USER_ID = "00000000-0000-0000-0000-000000000001";
+export const DEMO_USERS = [DEMO_USER_ID, "00000000-0000-0000-0000-000000000002"];
 
 /** Signed-in user from the JWT, or the seeded demo user when DEMO_MODE=true. */
 export async function resolveUserId(req: Request, db: SupabaseClient): Promise<string | null> {
+  const demo = req.headers.get("x-demo-user");
+  if (demo && DEMO_USERS.includes(demo)) return demo;
   const auth = req.headers.get("Authorization") ?? "";
   const token = auth.replace(/^Bearer\s+/i, "");
   if (token) {

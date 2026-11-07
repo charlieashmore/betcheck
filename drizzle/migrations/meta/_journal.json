@@ -22,6 +22,13 @@
       "when": 1794070171670,
       "tag": "0002_betcheck_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794072496508,
+      "tag": "0003_bc_demo_resets",
+      "breakpoints": true
     }
   ]
 }

@@ -135,6 +135,24 @@ export type Database = {
           },
         ]
       }
+      bc_demo_resets: {
+        Row: {
+          id: string
+          reset_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          reset_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          reset_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       bc_limits: {
         Row: {
           pending_effective_at: string | null

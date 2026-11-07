@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { PageTitle, Panel, StatusPill } from "@/components/SiteChrome";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { setActivePersona } from "@/lib/backend/api";
+import { resetDemo } from "@/lib/backend/bc.functions";
+import { PERSONAS, type PersonaKey } from "@/lib/backend/personas";
 import { q } from "@/lib/backend/api";
 import { gbp } from "@/lib/demo/data";
 import { useDemo } from "@/lib/demo/store";
@@ -22,9 +26,51 @@ const languages = [
 function AccountPage() {
   const { state, update, reset } = useDemo();
   const checks = useQuery(q.checks());
+  const qc = useQueryClient();
+  const [busy, setBusy] = useState(false);
+  const who = PERSONAS[state.persona];
+  const switchTo = (p: PersonaKey) => {
+    if (p === state.persona) return;
+    setActivePersona(p);
+    update((s) => ({ ...s, persona: p }));
+    qc.removeQueries({ queryKey: ["bc"] });
+    toast(`Now viewing as ${PERSONAS[p].name}.`);
+  };
+  const doReset = async () => {
+    if (!confirm("Reset the demo? This clears limits, breaks, your answers and the check list for both accounts.")) return;
+    setBusy(true);
+    try {
+      await resetDemo();
+      reset();
+      setActivePersona("priya");
+      qc.removeQueries({ queryKey: ["bc"] });
+      toast("Demo reset.");
+    } catch {
+      toast.error("Couldn't reset the demo. Try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <PageTitle title="Account" sub={`$Priya · ${state.onboarded ? "Monzo (demo)" : "No bank connected"}`} />
+      <PageTitle title="Account" sub={`${who.name} · ${state.onboarded ? "Monzo (demo)" : "No bank connected"}`} />
+      <Panel className="mb-6">
+        <h2 className="text-lg font-semibold">Demo account</h2>
+        <p className="text-sm text-muted-foreground">Switch to see how the same bet looks for someone in a different situation.</p>
+        <div role="radiogroup" aria-label="Demo account" className="mt-3 grid gap-3 sm:grid-cols-2">
+          {(Object.keys(PERSONAS) as PersonaKey[]).map((k) => {
+            const active = state.persona === k;
+            return (
+              <button key={k} role="radio" aria-checked={active} onClick={() => switchTo(k)}
+                className={`rounded-2xl border p-4 text-left transition ${active ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>
+                <div className="font-semibold">{PERSONAS[k].name}</div>
+                <div className={`text-sm ${active ? "opacity-80" : "text-muted-foreground"}`}>{PERSONAS[k].blurb}</div>
+              </button>
+            );
+          })}
+        </div>
+      </Panel>
+
       <div className="grid gap-6 md:grid-cols-2">
         <Panel>
           <div className="flex items-center justify-between gap-4">
@@ -61,8 +107,8 @@ function AccountPage() {
 
       <Panel className="mt-6">
         <h2 className="text-lg font-semibold">Demo</h2>
-        <p className="text-sm text-muted-foreground">Reset this browser's settings. Limits, answers and the check record are kept on the server.</p>
-        <Button variant="secondary" className="mt-3 rounded-full" onClick={() => { reset(); toast("Demo reset."); }}>Reset demo</Button>
+        <p className="text-sm text-muted-foreground">Start fresh for both accounts: clears limits, breaks, your transaction answers and the check list, and switches back to Priya.</p>
+        <Button variant="secondary" className="mt-3 rounded-full" disabled={busy} onClick={doReset}>{busy ? "Resetting…" : "Reset demo"}</Button>
       </Panel>
     </div>
   );
