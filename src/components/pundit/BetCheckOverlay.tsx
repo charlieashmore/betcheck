@@ -35,7 +35,7 @@ type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   ticket: OverlayTicket | null;
-  result?: StakeRes;
+  result: StakeRes | undefined;
   checking: boolean;
   error: unknown;
   pausedUntil: string | null;
