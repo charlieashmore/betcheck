@@ -24,6 +24,7 @@ import { Route as ApiPublicBcCoachRouteImport } from './routes/api/public/bc/coa
 import { Route as ApiPublicBcFeedbackRouteImport } from './routes/api/public/bc/feedback'
 import { Route as ApiPublicBcForecastRouteImport } from './routes/api/public/bc/forecast'
 import { Route as ApiPublicBcLimitsRouteImport } from './routes/api/public/bc/limits'
+import { Route as ApiPublicBcOverlayCheckRouteImport } from './routes/api/public/bc/overlay-check'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -101,6 +102,11 @@ const ApiPublicBcLimitsRoute = ApiPublicBcLimitsRouteImport.update({
   path: '/api/public/bc/limits',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBcOverlayCheckRoute = ApiPublicBcOverlayCheckRouteImport.update({
+  id: '/api/public/bc/overlay-check',
+  path: '/api/public/bc/overlay-check',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/api/public/bc/feedback': typeof ApiPublicBcFeedbackRoute
   '/api/public/bc/forecast': typeof ApiPublicBcForecastRoute
   '/api/public/bc/limits': typeof ApiPublicBcLimitsRoute
+  '/api/public/bc/overlay-check': typeof ApiPublicBcOverlayCheckRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/api/public/bc/feedback': typeof ApiPublicBcFeedbackRoute
   '/api/public/bc/forecast': typeof ApiPublicBcForecastRoute
   '/api/public/bc/limits': typeof ApiPublicBcLimitsRoute
+  '/api/public/bc/overlay-check': typeof ApiPublicBcOverlayCheckRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/api/public/bc/feedback': typeof ApiPublicBcFeedbackRoute
   '/api/public/bc/forecast': typeof ApiPublicBcForecastRoute
   '/api/public/bc/limits': typeof ApiPublicBcLimitsRoute
+  '/api/public/bc/overlay-check': typeof ApiPublicBcOverlayCheckRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -172,6 +181,7 @@ export interface FileRouteTypes {
     | '/api/public/bc/feedback'
     | '/api/public/bc/forecast'
     | '/api/public/bc/limits'
+    | '/api/public/bc/overlay-check'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/api/public/bc/feedback'
     | '/api/public/bc/forecast'
     | '/api/public/bc/limits'
+    | '/api/public/bc/overlay-check'
   id:
     | '__root__'
     | '/'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/api/public/bc/feedback'
     | '/api/public/bc/forecast'
     | '/api/public/bc/limits'
+    | '/api/public/bc/overlay-check'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -224,6 +236,7 @@ export interface RootRouteChildren {
   ApiPublicBcFeedbackRoute: typeof ApiPublicBcFeedbackRoute
   ApiPublicBcForecastRoute: typeof ApiPublicBcForecastRoute
   ApiPublicBcLimitsRoute: typeof ApiPublicBcLimitsRoute
+  ApiPublicBcOverlayCheckRoute: typeof ApiPublicBcOverlayCheckRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -333,6 +346,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicBcLimitsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/bc/overlay-check': {
+      id: '/api/public/bc/overlay-check'
+      path: '/api/public/bc/overlay-check'
+      fullPath: '/api/public/bc/overlay-check'
+      preLoaderRoute: typeof ApiPublicBcOverlayCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -352,6 +372,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicBcFeedbackRoute: ApiPublicBcFeedbackRoute,
   ApiPublicBcForecastRoute: ApiPublicBcForecastRoute,
   ApiPublicBcLimitsRoute: ApiPublicBcLimitsRoute,
+  ApiPublicBcOverlayCheckRoute: ApiPublicBcOverlayCheckRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

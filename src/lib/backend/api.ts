@@ -42,6 +42,22 @@ export type StakeRes = {
   disclaimer: string;
 };
 
+export type OverlayAction = { id: string; label: string; value?: number; primary: boolean; style?: string };
+export type OverlayRes = {
+  check_id?: string | null;
+  status: "pass" | "warn" | "block" | "paused";
+  status_label: string;
+  headline: string;
+  paused_until?: string;
+  context?: string;
+  hidden_cost?: { label: string; message: string };
+  impact?: { bill: string; date: string; without: { balance: string | null; shortfall_pct: number }; with: { balance: string | null; shortfall_pct: number } } | null;
+  why?: { status: string; text: string }[];
+  actions: OverlayAction[];
+  support?: { show: boolean; text: string };
+  disclaimer: string;
+};
+
 const bc = async <T,>(fn: BcFn, body?: Record<string, unknown>, method: "GET" | "POST" = "POST"): Promise<T> =>
   JSON.parse(await callBc({ data: body ? { fn, body, method, persona } : { fn, method, persona } })) as T;
 
@@ -52,6 +68,7 @@ export const api = {
   limits: () => bc<{ limits: LimitsRow | null }>("limits", undefined, "GET"),
   setLimits: (body: Record<string, unknown>) => bc<{ limits: LimitsRow; cooling_off: { hours: number } | null }>("limits", body),
   forecast: (weekly_cap?: number) => bc<{ baseline: Forecast; scenario: Forecast | null }>("forecast", weekly_cap != null ? { weekly_cap } : {}),
+  overlayCheck: (body: { market_id: string; side: "yes" | "no"; stake_gbp: number }) => bc<OverlayRes>("overlay-check", body),
   checkStake: (body: Record<string, unknown>) => bc<StakeRes>("check-stake", body),
 };
 

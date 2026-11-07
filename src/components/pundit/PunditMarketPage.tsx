@@ -10,7 +10,6 @@ import { gbp } from "@/lib/demo/data";
 import {
   PUNDIT_MARKETS,
   chartPaths,
-  ticketCheckBody,
   type OverlayTicket,
   type PunditSide,
 } from "@/lib/demo/pundit";
@@ -38,16 +37,19 @@ export function PunditMarketPage({ initialMarketId }: { initialMarketId: string 
   const paused = pauseHours > 0;
 
   const check = useMutation({
-    mutationFn: (nextTicket: OverlayTicket) => api.checkStake(ticketCheckBody(nextTicket)),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["bc", "checks"] }),
+    mutationFn: (nextTicket: OverlayTicket) => api.overlayCheck({ market_id: nextTicket.market.id, side: nextTicket.side, stake_gbp: nextTicket.stake }),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ["bc", "checks"] });
+      if (res.status === "paused" && res.paused_until) setPausedUntil(res.paused_until);
+    },
   });
 
   const setWeeklyLimit = useMutation({
-    mutationFn: () => api.setLimits({ weekly_gambling_limit: 30 }),
-    onSuccess: (response) => {
+    mutationFn: (amount: number) => api.setLimits({ weekly_gambling_limit: amount }),
+    onSuccess: (response, amount) => {
       queryClient.setQueryData(q.limits().queryKey, { limits: response.limits });
       queryClient.invalidateQueries({ queryKey: ["bc"] });
-      toast("Weekly limit set to £30. It applies straight away.");
+      toast(`Weekly limit set to £${amount}. It applies straight away.`);
       if (ticket) check.mutate(ticket);
     },
     onError: () => toast("Couldn't set the limit. Please try again."),
@@ -257,10 +259,9 @@ export function PunditMarketPage({ initialMarketId }: { initialMarketId: string 
         checking={check.isPending}
         error={check.error}
         pausedUntil={pausedUntil}
-        hasWeeklyLimit={limits.data?.limits?.weekly_gambling_limit != null}
         actionPending={setWeeklyLimit.isPending || pause.isPending}
         onRetry={() => { if (ticket) runCheck(ticket); }}
-        onSetLimit={() => setWeeklyLimit.mutate()}
+        onSetLimit={(amount) => setWeeklyLimit.mutate(amount)}
         onPause={() => pause.mutate()}
         onChangeStake={changeStake}
         onPlaceMock={placeMock}
