@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { PERSONAS } from "./personas";
 
-const FNS = ["check-stake", "classify-transactions", "coach", "feedback", "forecast", "limits"] as const;
+const FNS = ["check-stake", "classify-transactions", "coach", "feedback", "forecast", "limits", "overlay-check"] as const;
 export type BcFn = (typeof FNS)[number];
 const persona = z.enum(["priya", "marcus"]).default("priya");
 
@@ -19,6 +19,7 @@ export const callBc = createServerFn({ method: "POST" })
       feedback: () => import("./handlers/feedback"),
       forecast: () => import("./handlers/forecast"),
       limits: () => import("./handlers/limits"),
+      "overlay-check": () => import("./handlers/overlay-check"),
     } as const;
     const handler = (await mods[data.fn]()).default as (r: Request) => Promise<Response>;
     const req = new Request(`http://internal/${data.fn}`, {

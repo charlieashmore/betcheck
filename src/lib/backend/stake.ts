@@ -31,6 +31,8 @@ export function hiddenCost(params: {
   const overpayShare = (effective - fairProbability) / effective;
   return {
     fee_per_contract: fee,
+    // How much more than the fair price you pay, as a % of the fair price (59p vs 53.8% fair = about 10%)
+    overpay_pct: Math.round(((effective - fairProbability) / fairProbability) * 100),
     effective_price: Math.round(effective * 1000) / 1000,
     fair_probability: Math.round(fairProbability * 1000) / 1000,
     gap_points: gapPoints,
