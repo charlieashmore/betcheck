@@ -11,7 +11,7 @@ const FIELDS: { key: LimitField; label: string; help: string }[] = [
   { key: "monthly_loss_limit", label: "Monthly loss limit (USD)", help: "Checks are blocked once losses reach this." },
 ];
 
-export function LimitsForm({ initial, submitLabel, onSubmit, busy }: { initial?: LimitValues; submitLabel: string; onSubmit: (v: LimitValues) => void; busy?: boolean }) {
+export function LimitsForm({ initial, submitLabel, onSubmit, busy }: { initial?: LimitValues | undefined; submitLabel: string; onSubmit: (v: LimitValues) => void; busy?: boolean | undefined }) {
   const [v, setV] = useState<Record<LimitField, string>>(() =>
     Object.fromEntries(FIELDS.map((f) => [f.key, initial ? String(initial[f.key]) : ""])) as Record<LimitField, string>,
   );
