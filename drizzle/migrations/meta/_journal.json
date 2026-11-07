@@ -15,6 +15,13 @@
       "when": 1794055011292,
       "tag": "0001_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794070171670,
+      "tag": "0002_betcheck_schema",
+      "breakpoints": true
     }
   ]
 }
