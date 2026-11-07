@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // Helpers that turn detection + forecast output into coach-ready insights.
 import { forecast, type ForecastInput } from "./forecast";
 import { THRESHOLDS } from "./detect";

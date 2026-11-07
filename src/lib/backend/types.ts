@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // Shared types for the Stakewise backend.
 
 export interface Transaction {

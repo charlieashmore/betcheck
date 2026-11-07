@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // POST /forecast  { "weekly_cap": 15 (optional), "extra_outflow": 0, "horizon_days": 35 }
 // Returns the baseline forecast and, if weekly_cap is given, the "what if" scenario too,
 // so the UI can draw both bands and show the line recovering.

@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // Layer 3 - EXPLAIN & COACH.
 // The coach receives ONLY numbers already computed by the forecast and detection code.
 // It turns them into plain, kind language and suggests one action. It must never invent

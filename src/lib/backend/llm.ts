@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // Thin wrapper over any OpenAI-compatible chat-completions endpoint
 // (Lovable AI gateway, OpenAI, OpenRouter, etc.). Configure with secrets:
 //   LLM_API_URL  e.g. https://ai.gateway.lovable.dev/v1/chat/completions (check Lovable's docs)

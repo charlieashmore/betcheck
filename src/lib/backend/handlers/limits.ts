@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // GET  /limits                        -> current limits (+ any pending increase)
 // POST /limits { "weekly_gambling_limit": 15, "per_bet_max": 10, "pause_hours": 48 }
 // Lowering a limit or pausing applies immediately. Raising a limit waits 48 hours (cooling-off).

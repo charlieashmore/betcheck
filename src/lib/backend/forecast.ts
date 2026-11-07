@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // Layer 2 - FORECAST ("financial time travel").
 // 1. Find recurring income (handles irregular, weekly shift pay) and recurring bills.
 // 2. Everything else is day-to-day spending; gambling-flagged spend is tracked separately.

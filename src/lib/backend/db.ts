@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // Database access + request helpers shared by every edge function.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { classifyWithRules, merchantKey } from "./detect";

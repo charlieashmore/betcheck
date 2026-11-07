@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // POST /feedback  { "transaction_id": "...", "is_gambling": true }
 // The user's answer always wins and applies to every transaction from the same merchant.
 import { admin, corsHeaders, json, merchantKey, resolveUserId } from "../db";

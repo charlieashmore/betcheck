@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // POST /check-stake  - called by the overlay on a prediction-market page.
 // {
 //   "platform": "polymarket" | "kalshi" | "other",

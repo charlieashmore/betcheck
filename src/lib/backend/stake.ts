@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // Point-of-decision check used by the overlay on a prediction-market page.
 // Combines affordability rules, the forecast impact of this stake, and the
 // hidden cost of the price versus the bookmaker consensus.

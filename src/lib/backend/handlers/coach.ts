@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // POST /coach  { "language": "English", "plain_language": true }
 // Runs detect -> forecast -> suggested limit, then asks the LLM to explain it.
 // Returns the message plus both forecasts so the UI can show the evidence ("why am I seeing this?").

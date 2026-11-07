@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // POST /classify-transactions
 // Runs rules + behaviour signals over the user's transactions, asks the LLM to weigh in on
 // ambiguous ones, stores the results, and returns the items we should ask the user about.

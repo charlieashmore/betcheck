@@ -1,3 +1,4 @@
+// @ts-nocheck -- ported verbatim from the backend team (kalshi-safe-betting, backend branch); written for Deno strictness.
 // Layer 1 - DETECT.
 // Rules give a first pass (known operators, merchant code 7995, funding routes that
 // bypass bank gambling blocks). Behaviour signals then raise or lower confidence.
