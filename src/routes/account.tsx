@@ -3,8 +3,10 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { PageTitle, Panel, VerdictPill } from "@/components/SiteChrome";
-import { gbp, profile } from "@/lib/demo/data";
+import { PageTitle, Panel, StatusPill } from "@/components/SiteChrome";
+import { useQuery } from "@tanstack/react-query";
+import { q } from "@/lib/backend/api";
+import { gbp } from "@/lib/demo/data";
 import { useDemo } from "@/lib/demo/store";
 import { pageHead } from "@/lib/demo/head";
 
@@ -19,9 +21,10 @@ const languages = [
 
 function AccountPage() {
   const { state, update, reset } = useDemo();
+  const checks = useQuery(q.checks());
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
-      <PageTitle title="Account" sub={`${profile.name} · ${state.onboarded ? profile.bank : "No bank connected"}`} />
+      <PageTitle title="Account" sub={`$Priya · ${state.onboarded ? profile.bank : "No bank connected"}`} />
       <div className="grid gap-6 md:grid-cols-2">
         <Panel>
           <div className="flex items-center justify-between gap-4">
@@ -45,10 +48,12 @@ function AccountPage() {
         <h2 className="text-lg font-semibold">All bet checks</h2>
         <p className="text-sm text-muted-foreground">A permanent record of every check.</p>
         <ul className="mt-3 divide-y divide-border">
-          {state.checks.map((c) => (
+          {checks.isPending && <li className="py-3 text-sm text-muted-foreground">Loading…</li>}
+          {checks.data?.length === 0 && <li className="py-3 text-sm text-muted-foreground">No checks yet.</li>}
+          {checks.data?.map((c) => (
             <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm">
-              <span><span className="font-medium">{c.market}</span><span className="text-muted-foreground"> · {c.at} · {gbp(c.stake)}</span></span>
-              <VerdictPill verdict={c.verdict} />
+              <span><span className="font-medium">{c.market}</span><span className="text-muted-foreground"> · {new Date(c.at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })} · {gbp(c.stake)}</span></span>
+              <StatusPill status={c.status} />
             </li>
           ))}
         </ul>
@@ -56,7 +61,7 @@ function AccountPage() {
 
       <Panel className="mt-6">
         <h2 className="text-lg font-semibold">Demo</h2>
-        <p className="text-sm text-muted-foreground">Clear limits, feedback and checks to run the demo again.</p>
+        <p className="text-sm text-muted-foreground">Reset this browser's settings. Limits, answers and the check record are kept on the server.</p>
         <Button variant="secondary" className="mt-3 rounded-full" onClick={() => { reset(); toast("Demo reset."); }}>Reset demo</Button>
       </Panel>
     </div>
