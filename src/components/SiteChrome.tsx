@@ -75,3 +75,26 @@ export function VerdictPill({ verdict }: { verdict: "not-affordable" | "overvalu
   const [label, cls] = map[verdict];
   return <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${cls}`}>{label}</span>;
 }
+
+export function StatusPill({ status }: { status: "pass" | "warn" | "block" }) {
+  const map = {
+    block: ["Not affordable", "bg-risk text-destructive-foreground"],
+    warn: ["Worth a second look", "bg-value text-value-foreground"],
+    pass: ["Within budget", "bg-secondary text-foreground"],
+  } as const;
+  const [label, cls] = map[status];
+  return <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${cls}`}>{label}</span>;
+}
+
+export function Loading({ label = "Loading…" }: { label?: string }) {
+  return <div className="mx-auto max-w-6xl px-4 py-16 text-center text-muted-foreground">{label}</div>;
+}
+
+export function LoadError({ error }: { error: unknown }) {
+  return (
+    <div className="mx-auto max-w-xl px-4 py-16 text-center" role="alert">
+      <p className="font-semibold">We couldn't load this right now.</p>
+      <p className="mt-1 text-sm text-muted-foreground">{error instanceof Error ? error.message.slice(0, 200) : "Please try again."}</p>
+    </div>
+  );
+}

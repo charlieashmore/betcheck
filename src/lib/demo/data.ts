@@ -62,13 +62,14 @@ export type Market = {
   outcome: string;
   price: number; // pence per share, 0-100
   fair: number; // bookmaker-implied fair price after fees, pence
+  odds: [number, number]; // bookmaker decimal odds: this outcome first, then the other
   closes: string;
 };
 
 export const markets: Market[] = [
-  { id: "ars-che", platform: "Kalshi", title: "Arsenal vs Chelsea — who wins?", outcome: "Arsenal", price: 57, fair: 52.03, closes: "Sat 8 Nov, 17:30" },
-  { id: "liv-mci", platform: "Polymarket", title: "Liverpool vs Man City — who wins?", outcome: "Man City", price: 41, fair: 42.5, closes: "Sun 9 Nov, 16:30" },
-  { id: "tot-new", platform: "Kalshi", title: "Spurs vs Newcastle — over 2.5 goals?", outcome: "Yes", price: 63, fair: 60.1, closes: "Sun 9 Nov, 14:00" },
+  { id: "ars-che", platform: "Kalshi", title: "Arsenal vs Chelsea — who wins?", outcome: "Arsenal", price: 57, fair: 52.03, odds: [1.8, 2.1], closes: "Sat 8 Nov, 17:30" },
+  { id: "liv-mci", platform: "Polymarket", title: "Liverpool vs Man City — who wins?", outcome: "Man City", price: 41, fair: 42.5, odds: [2.3, 1.7], closes: "Sun 9 Nov, 16:30" },
+  { id: "tot-new", platform: "Kalshi", title: "Spurs vs Newcastle — over 2.5 goals?", outcome: "Yes", price: 63, fair: 60.1, odds: [1.6, 2.45], closes: "Sun 9 Nov, 14:00" },
 ];
 
 export const support = [
