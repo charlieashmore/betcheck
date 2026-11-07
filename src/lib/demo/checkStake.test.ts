@@ -11,6 +11,6 @@ describe("checkStake", () => {
     expect(checkStake(ars, 40, { weekly: null, perBet: null }, false).verdict).toBe("not-affordable");
   });
   it("an active pause blocks the bet", () => {
-    expect(checkStake(ars, 1, { weekly: null, perBet: null }, true).rules[0].ok).toBe(false);
+    expect(checkStake(ars, 1, { weekly: null, perBet: null }, true).rules[0]?.ok).toBe(false);
   });
 });

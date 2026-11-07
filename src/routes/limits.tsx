@@ -34,8 +34,8 @@ function LimitsPage() {
     const isRaise = (cur: number | null, next: number | null) => cur != null && (next == null || next > cur);
     const raise: { weekly?: number; perBet?: number } = {};
     const now: typeof state.limits = { ...state.limits };
-    if (isRaise(state.limits.weekly, w)) raise.weekly = w ?? undefined; else now.weekly = w;
-    if (isRaise(state.limits.perBet, p)) raise.perBet = p ?? undefined; else now.perBet = p;
+    if (isRaise(state.limits.weekly, w)) { if (w != null) raise.weekly = w; } else now.weekly = w;
+    if (isRaise(state.limits.perBet, p)) { if (p != null) raise.perBet = p; } else now.perBet = p;
     const hasRaise = Object.keys(raise).length > 0;
     update((s) => ({ ...s, limits: now, pendingRaise: hasRaise ? { ...raise, effectiveAt: Date.now() + H48 } : s.pendingRaise }));
     toast(hasRaise ? "Lower limits apply now. Raises take effect in 48 hours." : "Limits saved and active now.");

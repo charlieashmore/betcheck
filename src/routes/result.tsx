@@ -11,8 +11,8 @@ import { pageHead } from "@/lib/demo/head";
 
 export const Route = createFileRoute("/result")({
   validateSearch: (s: Record<string, unknown>) => ({
-    market: typeof s.market === "string" ? s.market : markets[0]!.id,
-    stake: Number(s.stake) > 0 ? Number(s.stake) : 40,
+    market: typeof s["market"] === "string" ? s["market"] : markets[0]!.id,
+    stake: Number(s["stake"]) > 0 ? Number(s["stake"]) : 40,
   }),
   head: pageHead("Bet check result", "Whether a stake is affordable and fairly priced, with the hidden cost and rent-day impact."),
   component: ResultPage,
