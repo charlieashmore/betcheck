@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LoadError, Loading, Panel, StatusPill } from "@/components/SiteChrome";
-import { gbp, markets, support } from "@/lib/demo/data";
+import { gbp, support } from "@/lib/demo/data";
+import { PUNDIT_MARKETS } from "@/lib/demo/pundit";
 import { useDemo } from "@/lib/demo/store";
 import { pageHead } from "@/lib/demo/head";
 import { api, pauseHoursLeft, q } from "@/lib/backend/api";
@@ -62,7 +63,7 @@ function Dashboard() {
   };
 
   const openLink = () => {
-    const m = markets.find((mk) => link.toLowerCase().includes(mk.id)) ?? markets[0]!;
+    const m = PUNDIT_MARKETS.find((mk) => link.toLowerCase().includes(mk.id)) ?? PUNDIT_MARKETS[0]!;
     navigate({ to: "/market/$id", params: { id: m.id } });
   };
 
@@ -148,15 +149,15 @@ function Dashboard() {
 
           <Panel>
             <h2 className="text-lg font-semibold">Check a bet</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Paste a Kalshi or Polymarket link, or pick a demo market.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Paste a prediction-market link, or pick a Pundit demo market.</p>
             <form className="mt-4 flex flex-col gap-2 sm:flex-row" onSubmit={(e) => { e.preventDefault(); openLink(); }}>
               <Input value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://kalshi.com/markets/..." className="h-11 rounded-full bg-input px-5" aria-label="Market link" />
               <Button type="submit" className="h-11 rounded-full px-6">Check</Button>
             </form>
             <div className="mt-4 flex flex-wrap gap-2">
-              {markets.map((m) => (
+              {PUNDIT_MARKETS.map((m) => (
                 <Link key={m.id} to="/market/$id" params={{ id: m.id }} className="rounded-full border border-border px-3 py-1.5 text-sm hover:bg-secondary">
-                  {m.platform}: {m.title.split(" — ")[0]}
+                  Pundit: {m.question}
                 </Link>
               ))}
             </div>
