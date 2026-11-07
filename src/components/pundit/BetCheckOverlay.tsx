@@ -4,7 +4,7 @@ import { LoaderCircle, X } from "lucide-react";
 import { LogoMark } from "@/components/SiteChrome";
 import { gbp } from "@/lib/demo/data";
 import { ticketPrice, type OverlayTicket } from "@/lib/demo/pundit";
-import type { StakeRes } from "@/lib/backend/api";
+import type { OverlayRes } from "@/lib/backend/api";
 import { cn } from "@/lib/utils";
 
 const statusCopy = {
@@ -35,14 +35,13 @@ type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   ticket: OverlayTicket | null;
-  result: StakeRes | undefined;
+  result: OverlayRes | undefined;
   checking: boolean;
   error: unknown;
   pausedUntil: string | null;
-  hasWeeklyLimit: boolean;
   actionPending: boolean;
   onRetry: () => void;
-  onSetLimit: () => void;
+  onSetLimit: (amount: number) => void;
   onPause: () => void;
   onChangeStake: () => void;
   onPlaceMock: () => void;
@@ -56,7 +55,6 @@ export function BetCheckOverlay({
   checking,
   error,
   pausedUntil,
-  hasWeeklyLimit,
   actionPending,
   onRetry,
   onSetLimit,
@@ -64,8 +62,8 @@ export function BetCheckOverlay({
   onChangeStake,
   onPlaceMock,
 }: Props) {
-  const status = result ? statusCopy[result.status] : null;
-  const impact = result?.forecast_impact;
+  const status = result && result.status !== "paused" ? statusCopy[result.status] : null;
+  const impact = result?.impact;
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -104,62 +102,70 @@ export function BetCheckOverlay({
                   <Dialog.Close className="rounded-xl border-2 border-overlay-foreground px-4 py-3 text-sm font-semibold">Close</Dialog.Close>
                 </div>
               </div>
-            ) : result && ticket && status ? (
+            ) : result && status ? (
               <div>
-                <span className={cn("inline-flex rounded-full px-3 py-1 text-xs font-bold tracking-wide", status.className)}>{status.label}</span>
-                <h2 className="mt-4 text-2xl font-bold leading-tight">{friendlyReason(result.headline)}</h2>
-                <p className="mt-2.5 text-sm text-overlay-muted">
-                  {ticket.market.question} · {ticket.side.toUpperCase()} at {Math.round(ticketPrice(ticket) * 100)}p · {gbp(ticket.stake)} stake
-                </p>
+                <span className={cn("inline-flex rounded-full px-3 py-1 text-xs font-bold tracking-wide", status.className)}>{result.status_label.toUpperCase()}</span>
+                <h2 className="mt-4 text-2xl font-bold leading-tight">{result.headline}</h2>
+                {result.context && <p className="mt-2.5 text-sm text-overlay-muted">{result.context}</p>}
 
-                <div className="mt-4 rounded-xl border border-overlay-line bg-card p-3.5 text-sm leading-relaxed">
-                  <p className="mb-1 text-xs font-bold tracking-wide text-overlay-accent-dark">HIDDEN COST</p>
-                  {result.hidden_cost.message}
-                </div>
+                {result.hidden_cost && (
+                  <div className="mt-4 rounded-xl border border-overlay-line bg-card p-3.5 text-sm leading-relaxed">
+                    <p className="mb-1 text-xs font-bold tracking-wide text-overlay-accent-dark">{result.hidden_cost.label.toUpperCase()}</p>
+                    {result.hidden_cost.message}
+                  </div>
+                )}
 
                 {impact && (
                   <div className="mt-3 grid grid-cols-2 gap-2.5">
                     <div className="rounded-xl border border-overlay-line bg-card p-3 text-xs leading-relaxed text-overlay-muted">
-                      Rent day, without this
-                      <strong className="mt-1 block text-xl font-bold text-overlay-foreground num">{money(impact.typical_balance_without)}</strong>
-                      {Math.round(impact.shortfall_chance_without * 100)}% chance of going short
+                      {impact.bill === "rent" ? "Rent day" : impact.bill}, without this
+                      <strong className="mt-1 block text-xl font-bold text-overlay-foreground num">{impact.without.balance ?? "—"}</strong>
+                      {impact.without.shortfall_pct}% chance of going short
                     </div>
                     <div className="rounded-xl border border-overlay-line bg-card p-3 text-xs leading-relaxed text-overlay-muted">
-                      Rent day, with this
-                      <strong className={cn("mt-1 block text-xl font-bold num", (impact.typical_balance_with ?? 0) < 0 ? "text-block" : "text-overlay-foreground")}>{money(impact.typical_balance_with)}</strong>
-                      {Math.round(impact.shortfall_chance_with * 100)}% chance of going short
+                      {impact.bill === "rent" ? "Rent day" : impact.bill}, with this
+                      <strong className={cn("mt-1 block text-xl font-bold num", impact.with.balance?.startsWith("−") ? "text-block" : "text-overlay-foreground")}>{impact.with.balance ?? "—"}</strong>
+                      {impact.with.shortfall_pct}% chance of going short
                     </div>
                   </div>
                 )}
 
-                <details className="mt-4 text-sm text-overlay-muted">
-                  <summary className="cursor-pointer font-semibold text-overlay-foreground">Why am I seeing this?</summary>
-                  <ul className="mt-3 grid gap-2.5">
-                    {result.rules.map((rule) => (
-                      <li key={rule.rule + rule.reason} className="grid grid-cols-[58px_1fr] items-start gap-2.5 leading-relaxed">
-                        <span className={cn("rounded-md px-1 py-0.5 text-center text-[10px] font-bold", rule.status === "block" ? "bg-block-soft text-block" : rule.status === "warn" ? "bg-warn-soft text-warn" : "bg-pass-soft text-pass")}>
-                          {rule.status.toUpperCase()}
-                        </span>
-                        <span>{friendlyReason(rule.reason)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
+                {!!result.why?.length && (
+                  <details className="mt-4 text-sm text-overlay-muted">
+                    <summary className="cursor-pointer font-semibold text-overlay-foreground">Why am I seeing this?</summary>
+                    <ul className="mt-3 grid gap-2.5">
+                      {result.why.map((rule) => (
+                        <li key={rule.text} className="grid grid-cols-[58px_1fr] items-start gap-2.5 leading-relaxed">
+                          <span className={cn("rounded-md px-1 py-0.5 text-center text-[10px] font-bold", rule.status === "block" ? "bg-block-soft text-block" : rule.status === "warn" ? "bg-warn-soft text-warn" : "bg-pass-soft text-pass")}>
+                            {rule.status.toUpperCase()}
+                          </span>
+                          <span>{rule.text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
 
                 <div className="mt-5 grid gap-2.5">
-                  {!hasWeeklyLimit && (
-                    <button type="button" disabled={actionPending} onClick={onSetLimit} className="rounded-xl bg-overlay-foreground px-4 py-3 text-sm font-semibold text-overlay-background disabled:opacity-50">
-                      {actionPending ? "Saving…" : "Set a £30 weekly limit"}
-                    </button>
-                  )}
-                  <button type="button" disabled={actionPending} onClick={onPause} className={cn("rounded-xl px-4 py-3 text-sm font-semibold disabled:opacity-50", hasWeeklyLimit ? "bg-overlay-foreground text-overlay-background" : "border-2 border-overlay-foreground")}>
-                    {actionPending ? "Saving…" : "Pause betting for 48 hours"}
-                  </button>
-                  <button type="button" onClick={onChangeStake} className="rounded-xl border-2 border-overlay-foreground px-4 py-3 text-sm font-semibold">Change my stake</button>
-                  <button type="button" onClick={onPlaceMock} className="px-4 py-1 text-xs font-medium text-overlay-muted underline">I understand, place the mock order anyway</button>
+                  {result.actions.map((a) => {
+                    const run = () => {
+                      if (a.id === "set_weekly_limit") onSetLimit(a.value ?? 30);
+                      else if (a.id === "pause_48h") onPause();
+                      else if (a.id === "change_stake") onChangeStake();
+                      else if (a.id === "proceed") onPlaceMock();
+                      else onOpenChange(false);
+                    };
+                    const busy = actionPending && (a.id === "set_weekly_limit" || a.id === "pause_48h");
+                    if (a.style === "link") return <button key={a.id} type="button" onClick={run} className="px-4 py-1 text-xs font-medium text-overlay-muted underline">{a.label} (mock order)</button>;
+                    return (
+                      <button key={a.id} type="button" disabled={busy} onClick={run} className={cn("rounded-xl px-4 py-3 text-sm font-semibold disabled:opacity-50", a.primary ? "bg-overlay-foreground text-overlay-background" : "border-2 border-overlay-foreground")}>
+                        {busy ? "Saving…" : a.label}
+                      </button>
+                    );
+                  })}
                 </div>
 
-                {result.status === "block" && (
+                {result.support?.show && (
                   <p className="mt-4 text-xs leading-relaxed text-overlay-muted">
                     Worried about money or betting? <a className="text-overlay-foreground underline" href="tel:08088020133">GamCare: 0808 8020 133</a> (free, 24/7) · <Link to="/help" className="underline">StepChange for debt advice</Link>.
                   </p>
@@ -170,7 +176,7 @@ export function BetCheckOverlay({
 
           <div className="flex items-center justify-between gap-3 border-t border-overlay-line px-6 py-3 text-[11px] text-overlay-muted">
             <span>Information only, not financial or betting advice. 18+</span>
-            <span className="whitespace-nowrap">Live backend</span>
+            <span className="whitespace-nowrap">Live: overlay-check</span>
           </div>
         </Dialog.Content>
       </Dialog.Portal>
