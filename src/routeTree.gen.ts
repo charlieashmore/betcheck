@@ -18,6 +18,12 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as ResultRouteImport } from './routes/result'
 import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as MarketIdRouteImport } from './routes/market.$id'
+import { Route as ApiPublicBcCheckStakeRouteImport } from './routes/api/public/bc/check-stake'
+import { Route as ApiPublicBcClassifyTransactionsRouteImport } from './routes/api/public/bc/classify-transactions'
+import { Route as ApiPublicBcCoachRouteImport } from './routes/api/public/bc/coach'
+import { Route as ApiPublicBcFeedbackRouteImport } from './routes/api/public/bc/feedback'
+import { Route as ApiPublicBcForecastRouteImport } from './routes/api/public/bc/forecast'
+import { Route as ApiPublicBcLimitsRouteImport } from './routes/api/public/bc/limits'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -64,6 +70,37 @@ const MarketIdRoute = MarketIdRouteImport.update({
   path: '/market/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBcCheckStakeRoute = ApiPublicBcCheckStakeRouteImport.update({
+  id: '/api/public/bc/check-stake',
+  path: '/api/public/bc/check-stake',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBcClassifyTransactionsRoute =
+  ApiPublicBcClassifyTransactionsRouteImport.update({
+    id: '/api/public/bc/classify-transactions',
+    path: '/api/public/bc/classify-transactions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicBcCoachRoute = ApiPublicBcCoachRouteImport.update({
+  id: '/api/public/bc/coach',
+  path: '/api/public/bc/coach',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBcFeedbackRoute = ApiPublicBcFeedbackRouteImport.update({
+  id: '/api/public/bc/feedback',
+  path: '/api/public/bc/feedback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBcForecastRoute = ApiPublicBcForecastRouteImport.update({
+  id: '/api/public/bc/forecast',
+  path: '/api/public/bc/forecast',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBcLimitsRoute = ApiPublicBcLimitsRouteImport.update({
+  id: '/api/public/bc/limits',
+  path: '/api/public/bc/limits',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,6 +112,12 @@ export interface FileRoutesByFullPath {
   '/result': typeof ResultRoute
   '/transactions': typeof TransactionsRoute
   '/market/$id': typeof MarketIdRoute
+  '/api/public/bc/check-stake': typeof ApiPublicBcCheckStakeRoute
+  '/api/public/bc/classify-transactions': typeof ApiPublicBcClassifyTransactionsRoute
+  '/api/public/bc/coach': typeof ApiPublicBcCoachRoute
+  '/api/public/bc/feedback': typeof ApiPublicBcFeedbackRoute
+  '/api/public/bc/forecast': typeof ApiPublicBcForecastRoute
+  '/api/public/bc/limits': typeof ApiPublicBcLimitsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +129,12 @@ export interface FileRoutesByTo {
   '/result': typeof ResultRoute
   '/transactions': typeof TransactionsRoute
   '/market/$id': typeof MarketIdRoute
+  '/api/public/bc/check-stake': typeof ApiPublicBcCheckStakeRoute
+  '/api/public/bc/classify-transactions': typeof ApiPublicBcClassifyTransactionsRoute
+  '/api/public/bc/coach': typeof ApiPublicBcCoachRoute
+  '/api/public/bc/feedback': typeof ApiPublicBcFeedbackRoute
+  '/api/public/bc/forecast': typeof ApiPublicBcForecastRoute
+  '/api/public/bc/limits': typeof ApiPublicBcLimitsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +147,12 @@ export interface FileRoutesById {
   '/result': typeof ResultRoute
   '/transactions': typeof TransactionsRoute
   '/market/$id': typeof MarketIdRoute
+  '/api/public/bc/check-stake': typeof ApiPublicBcCheckStakeRoute
+  '/api/public/bc/classify-transactions': typeof ApiPublicBcClassifyTransactionsRoute
+  '/api/public/bc/coach': typeof ApiPublicBcCoachRoute
+  '/api/public/bc/feedback': typeof ApiPublicBcFeedbackRoute
+  '/api/public/bc/forecast': typeof ApiPublicBcForecastRoute
+  '/api/public/bc/limits': typeof ApiPublicBcLimitsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +166,12 @@ export interface FileRouteTypes {
     | '/result'
     | '/transactions'
     | '/market/$id'
+    | '/api/public/bc/check-stake'
+    | '/api/public/bc/classify-transactions'
+    | '/api/public/bc/coach'
+    | '/api/public/bc/feedback'
+    | '/api/public/bc/forecast'
+    | '/api/public/bc/limits'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +183,12 @@ export interface FileRouteTypes {
     | '/result'
     | '/transactions'
     | '/market/$id'
+    | '/api/public/bc/check-stake'
+    | '/api/public/bc/classify-transactions'
+    | '/api/public/bc/coach'
+    | '/api/public/bc/feedback'
+    | '/api/public/bc/forecast'
+    | '/api/public/bc/limits'
   id:
     | '__root__'
     | '/'
@@ -133,6 +200,12 @@ export interface FileRouteTypes {
     | '/result'
     | '/transactions'
     | '/market/$id'
+    | '/api/public/bc/check-stake'
+    | '/api/public/bc/classify-transactions'
+    | '/api/public/bc/coach'
+    | '/api/public/bc/feedback'
+    | '/api/public/bc/forecast'
+    | '/api/public/bc/limits'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,6 +218,12 @@ export interface RootRouteChildren {
   ResultRoute: typeof ResultRoute
   TransactionsRoute: typeof TransactionsRoute
   MarketIdRoute: typeof MarketIdRoute
+  ApiPublicBcCheckStakeRoute: typeof ApiPublicBcCheckStakeRoute
+  ApiPublicBcClassifyTransactionsRoute: typeof ApiPublicBcClassifyTransactionsRoute
+  ApiPublicBcCoachRoute: typeof ApiPublicBcCoachRoute
+  ApiPublicBcFeedbackRoute: typeof ApiPublicBcFeedbackRoute
+  ApiPublicBcForecastRoute: typeof ApiPublicBcForecastRoute
+  ApiPublicBcLimitsRoute: typeof ApiPublicBcLimitsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -212,6 +291,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/bc/check-stake': {
+      id: '/api/public/bc/check-stake'
+      path: '/api/public/bc/check-stake'
+      fullPath: '/api/public/bc/check-stake'
+      preLoaderRoute: typeof ApiPublicBcCheckStakeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/bc/classify-transactions': {
+      id: '/api/public/bc/classify-transactions'
+      path: '/api/public/bc/classify-transactions'
+      fullPath: '/api/public/bc/classify-transactions'
+      preLoaderRoute: typeof ApiPublicBcClassifyTransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/bc/coach': {
+      id: '/api/public/bc/coach'
+      path: '/api/public/bc/coach'
+      fullPath: '/api/public/bc/coach'
+      preLoaderRoute: typeof ApiPublicBcCoachRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/bc/feedback': {
+      id: '/api/public/bc/feedback'
+      path: '/api/public/bc/feedback'
+      fullPath: '/api/public/bc/feedback'
+      preLoaderRoute: typeof ApiPublicBcFeedbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/bc/forecast': {
+      id: '/api/public/bc/forecast'
+      path: '/api/public/bc/forecast'
+      fullPath: '/api/public/bc/forecast'
+      preLoaderRoute: typeof ApiPublicBcForecastRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/bc/limits': {
+      id: '/api/public/bc/limits'
+      path: '/api/public/bc/limits'
+      fullPath: '/api/public/bc/limits'
+      preLoaderRoute: typeof ApiPublicBcLimitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -225,6 +346,12 @@ const rootRouteChildren: RootRouteChildren = {
   ResultRoute: ResultRoute,
   TransactionsRoute: TransactionsRoute,
   MarketIdRoute: MarketIdRoute,
+  ApiPublicBcCheckStakeRoute: ApiPublicBcCheckStakeRoute,
+  ApiPublicBcClassifyTransactionsRoute: ApiPublicBcClassifyTransactionsRoute,
+  ApiPublicBcCoachRoute: ApiPublicBcCoachRoute,
+  ApiPublicBcFeedbackRoute: ApiPublicBcFeedbackRoute,
+  ApiPublicBcForecastRoute: ApiPublicBcForecastRoute,
+  ApiPublicBcLimitsRoute: ApiPublicBcLimitsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
