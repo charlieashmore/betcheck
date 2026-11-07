@@ -11,7 +11,7 @@ import { pageHead } from "@/lib/demo/head";
 
 export const Route = createFileRoute("/result")({
   validateSearch: (s: Record<string, unknown>) => ({
-    market: typeof s.market === "string" ? s.market : markets[0].id,
+    market: typeof s.market === "string" ? s.market : markets[0]!.id,
     stake: Number(s.stake) > 0 ? Number(s.stake) : 40,
   }),
   head: pageHead("Bet check result", "Whether a stake is affordable and fairly priced, with the hidden cost and rent-day impact."),
@@ -22,7 +22,7 @@ function ResultPage() {
   const { market: id, stake } = Route.useSearch();
   const { state, update, now } = useDemo();
   const navigate = useNavigate();
-  const m = markets.find((x) => x.id === id) ?? markets[0];
+  const m = markets.find((x) => x.id === id) ?? markets[0]!;
   const paused = hoursLeft(state.pauseUntil, now) > 0;
   const r = useMemo(() => checkStake(m, stake, state.limits, paused), [m, stake, state.limits, paused]);
   const logged = useRef(false);
@@ -82,7 +82,7 @@ function ResultPage() {
 
       {r.verdict === "not-affordable" && (
         <p className="mt-4 text-sm">
-          Want to talk? <a className="underline" href={support[0].href} target="_blank" rel="noreferrer">GamCare</a> · <Link to="/help" className="underline">All support</Link>
+          Want to talk? <a className="underline" href={support[0]!.href} target="_blank" rel="noreferrer">GamCare</a> · <Link to="/help" className="underline">All support</Link>
         </p>
       )}
       <p className="mt-6 text-xs text-muted-foreground">BetCheck gives information only. It doesn't place bets or tell you what to do. Prices are demo data.</p>

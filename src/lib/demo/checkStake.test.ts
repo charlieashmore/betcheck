@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { checkStake } from "./checkStake";
 import { markets } from "./data";
 
-const ars = markets[0];
+const ars = markets[0]!;
 describe("checkStake", () => {
   it("£40 at 57p has about £3.49 hidden cost", () => {
     expect(checkStake(ars, 40, { weekly: null, perBet: null }, false).hiddenCost).toBeCloseTo(3.49, 1);

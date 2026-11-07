@@ -23,7 +23,7 @@ function Dashboard() {
   const highRisk = forecast.current.shortChance > 0.5 && state.limits.weekly == null;
 
   const openLink = () => {
-    const m = markets.find((mk) => link.toLowerCase().includes(mk.id)) ?? markets[0];
+    const m = markets.find((mk) => link.toLowerCase().includes(mk.id)) ?? markets[0]!;
     navigate({ to: "/market/$id", params: { id: m.id } });
   };
 
