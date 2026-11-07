@@ -128,13 +128,13 @@ test("coach and forecast agree: the coach's with-limit numbers equal the forecas
 });
 
 test("clock: a pinned demo date never falls back to the real clock", () => {
-  Deno.env.set("DEMO_TODAY", "2026-11-07");
+  process.env["DEMO_TODAY"] = "2026-11-07";
   try {
     assertEquals(today(), "2026-11-07");
     assertEquals(nowUtc().toISOString(), "2026-11-07T12:00:00.000Z");
-    Deno.env.set("DEMO_NOW", "2026-11-07T00:30:00Z");
+    process.env["DEMO_NOW"] = "2026-11-07T00:30:00Z";
     assertEquals(nowUtc().toISOString(), "2026-11-07T00:30:00.000Z");
-  } finally { Deno.env.delete("DEMO_TODAY"); Deno.env.delete("DEMO_NOW"); }
+  } finally { delete process.env["DEMO_TODAY"]; delete process.env["DEMO_NOW"]; }
 });
 
 test("detect: the ambiguous Wise transfer is put to the user (0.4 must not round down to not_gambling)", () => {
@@ -148,7 +148,7 @@ test("coach: an LLM reply with an invented action value or non-ASCII digits is r
   const { limit, result } = suggestWeeklyLimit(input, base.gambling_weekly_pace);
   const facts = buildFacts("Priya", base, result, limit, [], 406);
   const realFetch = globalThis.fetch;
-  Deno.env.set("LLM_API_KEY", "test");
+  process.env["LLM_API_KEY"] = "test";
   const reply = (o: unknown) => { globalThis.fetch = (() => Promise.resolve(new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(o) } }] })))) as typeof fetch; };
   try {
     reply({ headline: "Rent could be tight", body: "You could be about £148 short.", action: { label: "Set a limit", type: "set_weekly_limit", value: 500 }, support_link: false });
@@ -159,5 +159,5 @@ test("coach: an LLM reply with an invented action value or non-ASCII digits is r
     const ok = await coach(facts);
     assertEquals(ok.source, "llm");
     assertEquals(ok.support_link, true); // shortfall chance is 93%, so help is always offered
-  } finally { globalThis.fetch = realFetch; Deno.env.delete("LLM_API_KEY"); }
+  } finally { globalThis.fetch = realFetch; delete process.env["LLM_API_KEY"]; }
 });
