@@ -45,7 +45,7 @@ function CheckPage() {
   const [result, setResult] = useState<CheckResult | null>(null);
 
   useEffect(() => {
-    if (limits.data && !limits.data.limits) navigate({ to: "/onboarding" });
+    if (limits.data && (!limits.data.limits || !limits.data.hasProfile)) navigate({ to: "/onboarding" });
   }, [limits.data, navigate]);
 
   const list = useMemo(() => {

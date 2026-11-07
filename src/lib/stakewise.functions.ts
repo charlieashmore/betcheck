@@ -3,7 +3,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { runAffordability, type PlacedTradeLite } from "./affordability";
 import { runBenchmark, kalshiFeePerContract, type KalshiQuote, type SourceQuote } from "./benchmark";
-import { AFFORDABILITY_CONFIG, DATA_MODE, EXCLUSION_PERIODS, RULES_VERSION } from "./config";
+import { AFFORDABILITY_CONFIG, DATA_MODE, EXCLUSION_PERIODS, INELIGIBLE_COUNTRIES, RULES_VERSION } from "./config";
 import { applyDuePending, planLimitChange, type LimitState } from "./limits";
 
 const num = (v: unknown) => Number(v);
@@ -40,7 +40,20 @@ export const getLimitsState = createServerFn({ method: "GET" })
       .order("until", { ascending: false })
       .limit(1)
       .maybeSingle();
-    return { limits, excludedUntil: ex?.until ?? null };
+    const { data: profile } = await supabaseAdmin.from("profiles").select("country, dob_confirmed").eq("id", context.userId).maybeSingle();
+    return { limits, excludedUntil: ex?.until ?? null, hasProfile: !!profile?.dob_confirmed };
+  });
+
+export const completeProfile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ country: z.string().length(2), adult: z.literal(true) }).parse(d))
+  .handler(async ({ data, context }) => {
+    const country = data.country.toUpperCase();
+    if (INELIGIBLE_COUNTRIES.includes(country)) throw new Error("Stakewise is not available in your country.");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("profiles").upsert({ id: context.userId, country, dob_confirmed: true });
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });
 
 const limitValues = z.object({
@@ -158,6 +171,8 @@ export const runCheck = createServerFn({ method: "POST" })
     if (!(stake > 0)) throw new Error("Enter a stake or number of contracts.");
 
     // Affordability inputs
+    const { data: profile } = await supabase.from("profiles").select("dob_confirmed").eq("id", userId).maybeSingle();
+    if (!profile?.dob_confirmed) throw new Error("Confirm your age and country first.");
     const { data: limRow } = await supabase.from("limits").select("*").eq("user_id", userId).maybeSingle();
     if (!limRow) throw new Error("Set your limits first.");
     const { data: ex } = await supabase.from("exclusions").select("until").gt("until", now.toISOString()).order("until", { ascending: false }).limit(1).maybeSingle();
