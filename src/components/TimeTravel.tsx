@@ -16,7 +16,7 @@ export function TimeTravel({ r }: { r: CheckResult }) {
     () => projectForecast({ stake: r.stake, tradesPerWeek: perWeek, expectedReturnPerDollar: er, savingsApy: SAVINGS_APY, months }),
     [r.stake, perWeek, er, months],
   );
-  const end = points[points.length - 1];
+  const end = points[points.length - 1]!;
 
   return (
     <section className="rounded-lg border border-border bg-card p-5" aria-labelledby="tt-title">
@@ -34,7 +34,7 @@ export function TimeTravel({ r }: { r: CheckResult }) {
         </div>
         <div>
           <p className="mb-2 text-xs font-medium text-foreground">Times per week: <span className="num">{perWeek}</span></p>
-          <Slider min={1} max={14} step={1} value={[perWeek]} onValueChange={(v) => setPerWeek(v[0])} aria-label="Trades per week" />
+          <Slider min={1} max={14} step={1} value={[perWeek]} onValueChange={(v) => setPerWeek(v[0] ?? 1)} aria-label="Trades per week" />
         </div>
       </div>
 
