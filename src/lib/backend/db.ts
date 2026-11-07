@@ -1,5 +1,5 @@
 // Database access + request helpers shared by every edge function.
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { classifyWithRules, merchantKey } from "./detect";
 import { nowUtc, today } from "./clock";
 import type { Classification, Limits, Transaction } from "./types";
@@ -14,10 +14,9 @@ export function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
 
-export function admin(): SupabaseClient {
-  return createClient(process.env["SUPABASE_URL"]!, process.env["SUPABASE_SERVICE_ROLE_KEY"]!, {
-    auth: { persistSession: false },
-  });
+export async function admin(): Promise<SupabaseClient> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin as unknown as SupabaseClient;
 }
 
 export const DEMO_USER_ID = "00000000-0000-0000-0000-000000000001";
@@ -30,7 +29,7 @@ export async function resolveUserId(req: Request, db: SupabaseClient): Promise<s
     const { data } = await db.auth.getUser(token);
     if (data?.user) return data.user.id;
   }
-  return process.env["DEMO_MODE"] === "true" ? (process.env["DEMO_USER_ID"] ?? DEMO_USER_ID) : null;
+  return (process.env["DEMO_MODE"] ?? "true") === "true" ? (process.env["DEMO_USER_ID"] ?? DEMO_USER_ID) : null;
 }
 
 // "Today" / "now" can be pinned for the demo (see clock.ts)

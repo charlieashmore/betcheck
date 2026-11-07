@@ -15,7 +15,7 @@ round amounts matter. Return JSON {"items":[{"i":number,"p":number,"reason":stri
 export default async function handler(req: Request): Promise<Response> {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
-    const db = admin();
+    const db = await admin();
     const userId = await resolveUserId(req, db);
     if (!userId) return json({ error: "Not signed in" }, 401);
     const ctx = await loadContext(db, userId);

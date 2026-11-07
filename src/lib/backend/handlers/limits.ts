@@ -8,7 +8,7 @@ const COOLING_OFF_HOURS = 48;
 export default async function handler(req: Request): Promise<Response> {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
-    const db = admin();
+    const db = await admin();
     const userId = await resolveUserId(req, db);
     if (!userId) return json({ error: "Not signed in" }, 401);
 
