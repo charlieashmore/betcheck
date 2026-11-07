@@ -10,94 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedCheckRouteImport } from './routes/_authenticated.check'
-import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated.history'
-import { Route as AuthenticatedLimitsRouteImport } from './routes/_authenticated.limits'
-import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as ForecastRouteImport } from './routes/forecast'
+import { Route as HelpRouteImport } from './routes/help'
+import { Route as LimitsRouteImport } from './routes/limits'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as ResultRouteImport } from './routes/result'
+import { Route as TransactionsRouteImport } from './routes/transactions'
+import { Route as MarketIdRouteImport } from './routes/market.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const ForecastRoute = ForecastRouteImport.update({
+  id: '/forecast',
+  path: '/forecast',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedCheckRoute = AuthenticatedCheckRouteImport.update({
-  id: '/check',
-  path: '/check',
-  getParentRoute: () => AuthenticatedRoute,
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedLimitsRoute = AuthenticatedLimitsRouteImport.update({
+const LimitsRoute = LimitsRouteImport.update({
   id: '/limits',
   path: '/limits',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
+const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResultRoute = ResultRouteImport.update({
+  id: '/result',
+  path: '/result',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransactionsRoute = TransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketIdRoute = MarketIdRouteImport.update({
+  id: '/market/$id',
+  path: '/market/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/check': typeof AuthenticatedCheckRoute
-  '/history': typeof AuthenticatedHistoryRoute
-  '/limits': typeof AuthenticatedLimitsRoute
-  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/account': typeof AccountRoute
+  '/forecast': typeof ForecastRoute
+  '/help': typeof HelpRoute
+  '/limits': typeof LimitsRoute
+  '/onboarding': typeof OnboardingRoute
+  '/result': typeof ResultRoute
+  '/transactions': typeof TransactionsRoute
+  '/market/$id': typeof MarketIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/check': typeof AuthenticatedCheckRoute
-  '/history': typeof AuthenticatedHistoryRoute
-  '/limits': typeof AuthenticatedLimitsRoute
-  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/account': typeof AccountRoute
+  '/forecast': typeof ForecastRoute
+  '/help': typeof HelpRoute
+  '/limits': typeof LimitsRoute
+  '/onboarding': typeof OnboardingRoute
+  '/result': typeof ResultRoute
+  '/transactions': typeof TransactionsRoute
+  '/market/$id': typeof MarketIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteWithChildren
-  '/auth': typeof AuthRoute
-  '/_authenticated/check': typeof AuthenticatedCheckRoute
-  '/_authenticated/history': typeof AuthenticatedHistoryRoute
-  '/_authenticated/limits': typeof AuthenticatedLimitsRoute
-  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/account': typeof AccountRoute
+  '/forecast': typeof ForecastRoute
+  '/help': typeof HelpRoute
+  '/limits': typeof LimitsRoute
+  '/onboarding': typeof OnboardingRoute
+  '/result': typeof ResultRoute
+  '/transactions': typeof TransactionsRoute
+  '/market/$id': typeof MarketIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/check' | '/history' | '/limits' | '/onboarding'
+  fullPaths:
+    | '/'
+    | '/account'
+    | '/forecast'
+    | '/help'
+    | '/limits'
+    | '/onboarding'
+    | '/result'
+    | '/transactions'
+    | '/market/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/check' | '/history' | '/limits' | '/onboarding'
+  to:
+    | '/'
+    | '/account'
+    | '/forecast'
+    | '/help'
+    | '/limits'
+    | '/onboarding'
+    | '/result'
+    | '/transactions'
+    | '/market/$id'
   id:
     | '__root__'
     | '/'
-    | '/_authenticated'
-    | '/auth'
-    | '/_authenticated/check'
-    | '/_authenticated/history'
-    | '/_authenticated/limits'
-    | '/_authenticated/onboarding'
+    | '/account'
+    | '/forecast'
+    | '/help'
+    | '/limits'
+    | '/onboarding'
+    | '/result'
+    | '/transactions'
+    | '/market/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AccountRoute: typeof AccountRoute
+  ForecastRoute: typeof ForecastRoute
+  HelpRoute: typeof HelpRoute
+  LimitsRoute: typeof LimitsRoute
+  OnboardingRoute: typeof OnboardingRoute
+  ResultRoute: typeof ResultRoute
+  TransactionsRoute: typeof TransactionsRoute
+  MarketIdRoute: typeof MarketIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -109,73 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteImport
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/forecast': {
+      id: '/forecast'
+      path: '/forecast'
+      fullPath: '/forecast'
+      preLoaderRoute: typeof ForecastRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/check': {
-      id: '/_authenticated/check'
-      path: '/check'
-      fullPath: '/check'
-      preLoaderRoute: typeof AuthenticatedCheckRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/history': {
-      id: '/_authenticated/history'
-      path: '/history'
-      fullPath: '/history'
-      preLoaderRoute: typeof AuthenticatedHistoryRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/limits': {
-      id: '/_authenticated/limits'
+    '/limits': {
+      id: '/limits'
       path: '/limits'
       fullPath: '/limits'
-      preLoaderRoute: typeof AuthenticatedLimitsRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      preLoaderRoute: typeof LimitsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/onboarding': {
-      id: '/_authenticated/onboarding'
+    '/onboarding': {
+      id: '/onboarding'
       path: '/onboarding'
       fullPath: '/onboarding'
-      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/result': {
+      id: '/result'
+      path: '/result'
+      fullPath: '/result'
+      preLoaderRoute: typeof ResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transactions': {
+      id: '/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof TransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/market/$id': {
+      id: '/market/$id'
+      path: '/market/$id'
+      fullPath: '/market/$id'
+      preLoaderRoute: typeof MarketIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface AuthenticatedRouteChildren {
-  AuthenticatedCheckRoute: typeof AuthenticatedCheckRoute
-  AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
-  AuthenticatedLimitsRoute: typeof AuthenticatedLimitsRoute
-  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
-}
-
-const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedCheckRoute: AuthenticatedCheckRoute,
-  AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
-  AuthenticatedLimitsRoute: AuthenticatedLimitsRoute,
-  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
-}
-
-const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
-  AuthenticatedRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthenticatedRoute: AuthenticatedRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AccountRoute: AccountRoute,
+  ForecastRoute: ForecastRoute,
+  HelpRoute: HelpRoute,
+  LimitsRoute: LimitsRoute,
+  OnboardingRoute: OnboardingRoute,
+  ResultRoute: ResultRoute,
+  TransactionsRoute: TransactionsRoute,
+  MarketIdRoute: MarketIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

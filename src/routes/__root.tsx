@@ -1,3 +1,4 @@
+import { DemoProvider } from "@/lib/demo/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -83,10 +84,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Stakewise — check a Kalshi trade before you place it" },
-      { name: "description", content: "Affordability and market-benchmark checks for Kalshi sports trades. Information only." },
-      { property: "og:title", content: "Stakewise" },
-      { property: "og:description", content: "Affordability and market-benchmark checks for Kalshi sports trades." },
+      { title: "BetCheck — your AI money coach" },
+      { name: "description", content: "BetCheck spots betting spend, forecasts rent day and checks a stake before you place it." },
+      { property: "og:title", content: "BetCheck" },
+      { property: "og:description", content: "An AI money coach that checks a bet before you place it." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
@@ -99,7 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" },
     ],
   }),
   shellComponent: RootShell,
@@ -127,6 +128,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <DemoProvider>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div className="flex min-h-screen flex-col">
         <SiteHeader />
@@ -136,6 +138,7 @@ function RootComponent() {
         <SiteFooter />
       </div>
       <Toaster />
+      </DemoProvider>
     </QueryClientProvider>
   );
 }

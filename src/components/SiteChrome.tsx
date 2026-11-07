@@ -1,43 +1,40 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { Link } from "@tanstack/react-router";
 
-const navCls = "rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
-const activeCls = "bg-secondary text-foreground font-medium";
+export function Logo() {
+  return (
+    <Link to="/" className="flex items-center gap-2 text-lg font-bold tracking-tight text-foreground" aria-label="BetCheck home">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
+        <rect width="26" height="26" rx="8" fill="currentColor" />
+        <path d="M7 13.5l4 4 8-9" stroke="var(--background)" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      BetCheck
+    </Link>
+  );
+}
+
+const nav = [
+  { to: "/", label: "Dashboard" },
+  { to: "/forecast", label: "Forecast" },
+  { to: "/transactions", label: "Transactions" },
+  { to: "/limits", label: "Your limits" },
+  { to: "/account", label: "Account" },
+] as const;
+
+const navCls = "whitespace-nowrap rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function SiteHeader() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
   return (
-    <header className="border-b border-border bg-card">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-2 px-4 py-3">
-        <Link to="/" className="mr-auto flex items-center gap-2 font-semibold text-foreground">
-          <ShieldCheck className="h-5 w-5 text-primary" aria-hidden />
-          Stakewise
-        </Link>
-        {user ? (
-          <nav aria-label="Main" className="flex flex-wrap items-center gap-1">
-            <Link to="/check" className={navCls} activeProps={{ className: activeCls }}>Check a trade</Link>
-            <Link to="/limits" className={navCls} activeProps={{ className: activeCls }}>My limits</Link>
-            <Link to="/history" className={navCls} activeProps={{ className: activeCls }}>History</Link>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={async () => {
-                await supabase.auth.signOut();
-                navigate({ to: "/" });
-              }}
-            >
-              Sign out
-            </Button>
-          </nav>
-        ) : (
-          <Button asChild size="sm">
-            <Link to="/auth">Sign in</Link>
-          </Button>
-        )}
+    <header className="border-b border-border bg-background">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-4">
+        <Logo />
+        <nav aria-label="Main" className="-mx-1 flex flex-1 items-center gap-1 overflow-x-auto md:justify-end">
+          {nav.map((n) => (
+            <Link key={n.to} to={n.to} className={navCls} activeOptions={{ exact: n.to === "/" }} activeProps={{ className: "bg-foreground font-medium text-background hover:text-background" }}>
+              {n.label}
+            </Link>
+          ))}
+          <Link to="/help" className={navCls} activeProps={{ className: "bg-foreground font-medium text-background hover:text-background" }}>Help</Link>
+        </nav>
       </div>
     </header>
   );
@@ -45,11 +42,36 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-auto border-t border-border bg-card">
-      <div className="mx-auto max-w-5xl px-4 py-4 text-sm text-muted-foreground">
-        Information only, not financial or betting advice. 18+. Gambling help:{" "}
-        <a className="font-medium text-foreground underline underline-offset-2" href="tel:08088020133">GamCare 0808 8020 133</a>.
+    <footer className="mt-auto border-t border-border">
+      <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-5 text-sm text-muted-foreground md:flex-row md:justify-between">
+        <span>Information only, not financial or betting advice. 18+. Demo data.</span>
+        <span>
+          Gambling help: <a className="font-medium text-foreground underline underline-offset-2" href="tel:08088020133">GamCare 0808 8020 133</a>
+        </span>
       </div>
     </footer>
   );
+}
+
+export function Panel({ className = "", children }: { className?: string; children: React.ReactNode }) {
+  return <section className={`rounded-2xl border border-border bg-card p-5 md:p-6 ${className}`}>{children}</section>;
+}
+
+export function PageTitle({ title, sub }: { title: string; sub?: string }) {
+  return (
+    <div className="mb-6">
+      <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">{title}</h1>
+      {sub && <p className="mt-1 text-muted-foreground">{sub}</p>}
+    </div>
+  );
+}
+
+export function VerdictPill({ verdict }: { verdict: "not-affordable" | "overvalued" | "ok" }) {
+  const map = {
+    "not-affordable": ["Not affordable", "bg-risk text-destructive-foreground"],
+    overvalued: ["Overvalued", "bg-value text-value-foreground"],
+    ok: ["Within limits", "bg-secondary text-foreground"],
+  } as const;
+  const [label, cls] = map[verdict];
+  return <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${cls}`}>{label}</span>;
 }

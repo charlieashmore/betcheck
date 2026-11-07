@@ -36,3 +36,4 @@ use the editor.
 - `checks` is append-only (DB trigger blocks update/delete) — it is the audit log.
 - Eligible-country list exists in both `config.ts` and `public.handle_new_user()`; change both together.
 - AI reflection coach and financial time-travel projection are separate modules (`src/lib/coach.functions.ts`, pure `src/lib/forecasting.ts`) so the advisory rules engine stays deterministic and testable.
+- Frontend-only demo layer: mock data in `src/lib/demo/data.ts`, pure stake rules in `src/lib/demo/checkStake.ts`, browser-saved state in `src/lib/demo/store.tsx`; the backend is built separately and will replace these, so keep pages reading through this layer.
