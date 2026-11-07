@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ResultCard, type CheckResult } from "@/components/ResultCard";
+import { CoachCard } from "@/components/CoachCard";
+import { TimeTravel } from "@/components/TimeTravel";
 import { getLimitsState, runCheck } from "@/lib/stakewise.functions";
 import { fixturesQuery } from "@/lib/queries";
 import { DATA_MODE } from "@/lib/config";
@@ -138,7 +140,11 @@ function CheckPage() {
 
       <div aria-live="polite">
         {result ? (
-          <ResultCard r={result} />
+          <div className="space-y-6">
+            <ResultCard r={result} />
+            <CoachCard r={result} />
+            <TimeTravel r={result} />
+          </div>
         ) : (
           <div className="rounded-lg border border-dashed border-border p-8 text-sm text-muted-foreground">
             Pick a market, side and size, then run a check. The result shows whether it fits your limits and how the price compares with the wider market.
