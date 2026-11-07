@@ -85,6 +85,30 @@
   --color-value-foreground: var(--value-foreground);
   --font-sans: var(--app-font-sans);
   --font-mono: var(--app-font-mono);
+  --font-pundit-sans: "Inter", var(--app-font-sans);
+  --font-pundit-display: "Space Grotesk", var(--app-font-sans);
+  --color-pundit-background: var(--pundit-background);
+  --color-pundit-foreground: var(--pundit-foreground);
+  --color-pundit-card: var(--pundit-card);
+  --color-pundit-card-raised: var(--pundit-card-raised);
+  --color-pundit-border: var(--pundit-border);
+  --color-pundit-muted: var(--pundit-muted);
+  --color-pundit-yes: var(--pundit-yes);
+  --color-pundit-yes-soft: var(--pundit-yes-soft);
+  --color-pundit-no: var(--pundit-no);
+  --color-pundit-no-soft: var(--pundit-no-soft);
+  --color-pundit-brand: var(--pundit-brand);
+  --color-pundit-brand-foreground: var(--pundit-brand-foreground);
+  --color-pundit-banner: var(--pundit-banner);
+  --color-pundit-banner-foreground: var(--pundit-banner-foreground);
+  --color-pundit-buy-foreground: var(--pundit-buy-foreground);
+  --color-pundit-scrim: var(--pundit-scrim);
+  --color-overlay-background: var(--overlay-background);
+  --color-overlay-foreground: var(--overlay-foreground);
+  --color-overlay-muted: var(--overlay-muted);
+  --color-overlay-line: var(--overlay-line);
+  --color-overlay-accent: var(--overlay-accent);
+  --color-overlay-accent-dark: var(--overlay-accent-dark);
 }
 
 :root {

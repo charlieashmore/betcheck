@@ -1,9 +1,8 @@
 import { Link } from "@tanstack/react-router";
 
-export function Logo() {
+export function LogoMark({ className = "h-[26px] w-[26px]" }: { className?: string }) {
   return (
-    <Link to="/" className="flex items-center gap-2 font-sans text-lg font-bold tracking-[-0.05em] text-foreground" aria-label="BetCheck home">
-      <svg width="26" height="26" viewBox="0 0 51 51" fill="none" aria-hidden>
+      <svg className={className} viewBox="0 0 51 51" fill="none" aria-hidden>
         <circle cx="25.4458" cy="25.4458" r="24" fill="var(--background)" strokeWidth="2.89157" stroke="currentColor" />
         <path d="M16.1927 34.4096C23.6952 38.3483 27.9798 38.1809 34.6988 34.4096" strokeWidth="2.89157" strokeLinecap="round" stroke="currentColor" />
         <path d="M12.4337 19.3735L20.8193 22.1205" strokeWidth="2.89157" strokeLinecap="round" stroke="currentColor" />
