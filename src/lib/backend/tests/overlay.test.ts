@@ -1,3 +1,4 @@
+// @ts-nocheck -- mirrors the backend team's Deno test file
 import { describe, expect, it } from "vitest";
 import fx from "./fixtures.json";
 import { classifyWithRules } from "../detect";
