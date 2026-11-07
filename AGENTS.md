@@ -28,3 +28,10 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Benchmark and affordability logic live as pure modules in `src/lib/benchmark.ts`, `src/lib/affordability.ts`, `src/lib/limits.ts` with tunables in `src/lib/config.ts`; keep I/O out so they stay unit-tested.
+- Server logic (run-check, limits, exclusion, ingest) uses TanStack `createServerFn` in `src/lib/stakewise.functions.ts`, not Supabase Edge Functions, per the stack's server rules.
+- Limits and exclusions are written only through server functions with the admin client (RLS allows select only), so the 48h raise delay and self-exclusion can't be bypassed from the browser.
+- `checks` is append-only (DB trigger blocks update/delete) — it is the audit log.
+- Eligible-country list exists in both `config.ts` and `public.handle_new_user()`; change both together.
