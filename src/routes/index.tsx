@@ -1,26 +1,65 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ChevronDown, Phone } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Panel, VerdictPill } from "@/components/SiteChrome";
-import { forecast, gbp, markets, profile, flagged, support } from "@/lib/demo/data";
-import { hoursLeft, useDemo } from "@/lib/demo/store";
+import { LoadError, Loading, Panel, StatusPill } from "@/components/SiteChrome";
+import { gbp, markets, support } from "@/lib/demo/data";
+import { useDemo } from "@/lib/demo/store";
 import { pageHead } from "@/lib/demo/head";
+import { api, pauseHoursLeft, q } from "@/lib/backend/api";
 
 export const Route = createFileRoute("/")({
   head: pageHead("Dashboard", "Your balance, rent-day outlook, coach advice and recent bet checks in one place."),
   component: Dashboard,
 });
 
+const shortDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+const when = (iso: string) => new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+
 function Dashboard() {
-  const { state, update, now } = useDemo();
+  const { state } = useDemo();
+  const qc = useQueryClient();
   const navigate = useNavigate();
   const [why, setWhy] = useState(false);
   const [link, setLink] = useState("");
-  const pauseHrs = hoursLeft(state.pauseUntil, now);
-  const raiseHrs = hoursLeft(state.pendingRaise?.effectiveAt ?? null, now);
-  const highRisk = forecast.current.shortChance > 0.5 && state.limits.weekly == null;
+  const coach = useQuery(q.coach(state.plainLanguage));
+  const limits = useQuery(q.limits());
+  const checks = useQuery(q.checks());
+
+  const setLimit = useMutation({
+    mutationFn: (body: Record<string, unknown>) => api.setLimits(body),
+    onSuccess: (r) => {
+      qc.invalidateQueries({ queryKey: ["bc"] });
+      toast(r.cooling_off ? `Saved. Raises take effect in ${r.cooling_off.hours} hours.` : "Saved and active now.");
+    },
+    onError: () => toast("Couldn't save that. Please try again."),
+  });
+
+  if (coach.isPending) return <Loading label="Your coach is reading your last 90 days…" />;
+  if (coach.isError) return <LoadError error={coach.error} />;
+
+  const c = coach.data;
+  const facts = c.evidence.facts;
+  const base = c.forecast.baseline;
+  const withLimit = c.forecast.with_suggested_limit;
+  const sugg = c.forecast.suggested_weekly_limit;
+  const lim = limits.data?.limits ?? null;
+  const pauseHrs = pauseHoursLeft(lim);
+  const raisePending = lim?.pending_effective_at && Date.parse(lim.pending_effective_at) > Date.now();
+  const rentP50 = base.balance_at_next_big_bill?.p50 ?? null;
+  const highRisk = base.shortfall_probability > 0.5 && lim?.weekly_gambling_limit == null;
+  const bill = facts.next_big_bill;
+
+  const doAction = () => {
+    const a = c.message.action;
+    if (!a) return;
+    if (a.type === "set_weekly_limit") setLimit.mutate({ weekly_gambling_limit: a.value ?? sugg });
+    else if (a.type === "pause") setLimit.mutate({ pause_hours: a.value ?? 48 });
+    else navigate({ to: "/help" });
+  };
 
   const openLink = () => {
     const m = markets.find((mk) => link.toLowerCase().includes(mk.id)) ?? markets[0]!;
@@ -31,16 +70,18 @@ function Dashboard() {
     <div className="mx-auto max-w-6xl px-4 py-8">
       {!state.onboarded && (
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-secondary px-5 py-4">
-          <p className="text-sm">Connect your bank so BetCheck can spot betting spend. This demo uses sample data for Priya.</p>
+          <p className="text-sm">Connect your bank so BetCheck can spot betting spend. This demo uses sample data for {facts.first_name}.</p>
           <Button asChild size="sm" className="rounded-full"><Link to="/onboarding">Connect bank</Link></Button>
         </div>
       )}
 
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-muted-foreground">Hi {profile.name} · Saturday 7 November 2026</p>
-          <p className="mt-1 text-4xl font-bold tracking-tight num">{gbp(profile.balance)}</p>
-          <p className="text-sm text-muted-foreground">Balance today · rent of {gbp(profile.rent)} due {profile.payday}</p>
+          <p className="text-sm text-muted-foreground">Hi {facts.first_name} · Saturday 7 November 2026</p>
+          <p className="mt-1 text-4xl font-bold tracking-tight num">{gbp(facts.balance_now)}</p>
+          <p className="text-sm text-muted-foreground">
+            Balance today{bill ? ` · rent of ${gbp(bill.amount)} due ${shortDate(bill.date)}` : ""}
+          </p>
         </div>
         <Link to="/forecast" className="text-sm font-medium underline underline-offset-4">See your rent-day forecast</Link>
       </div>
@@ -49,25 +90,16 @@ function Dashboard() {
         <div className="space-y-6">
           <Panel className="bg-foreground text-background">
             <p className="text-xs font-semibold uppercase tracking-widest opacity-70">Your coach</p>
-            <h2 className="mt-2 text-2xl font-bold">
-              {state.limits.weekly != null ? "You've set a weekly limit. Nice work." : `You could be ${gbp(Math.abs(forecast.current.rentDay))} short on rent day.`}
-            </h2>
-            <p className="mt-2 max-w-xl opacity-80">
-              {state.plainLanguage
-                ? `At your current pace, there's a ${Math.round(forecast.current.shortChance * 100)}% chance you won't cover rent. A £${forecast.suggestedWeeklyLimit} weekly limit brings that down to ${Math.round(forecast.limited.shortChance * 100)}%.`
-                : `Across 500 simulated futures, ${Math.round(forecast.current.shortChance * 100)}% end below £0 on 28 Nov (median ${gbp(forecast.current.rentDay)}). Capping betting at £${forecast.suggestedWeeklyLimit}/week moves the median to ${gbp(forecast.limited.rentDay)}.`}
-            </p>
+            <h2 className="mt-2 text-2xl font-bold">{c.message.headline}</h2>
+            <p className="mt-2 max-w-xl opacity-80">{c.message.body}</p>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Button
-                variant="secondary"
-                className="rounded-full"
-                disabled={state.limits.weekly != null}
-                onClick={() => update((s) => ({ ...s, limits: { ...s.limits, weekly: forecast.suggestedWeeklyLimit } }))}
-              >
-                Set a £{forecast.suggestedWeeklyLimit} weekly limit
-              </Button>
-              <Button variant="outline" className="rounded-full border-background/40 bg-transparent text-background hover:bg-background/10 hover:text-background" asChild>
-                <Link to="/limits">Pause 48 hours</Link>
+              {c.message.action && (
+                <Button variant="secondary" className="rounded-full" disabled={setLimit.isPending || (c.message.action.type === "set_weekly_limit" && lim?.weekly_gambling_limit != null)} onClick={doAction}>
+                  {c.message.action.label}
+                </Button>
+              )}
+              <Button variant="outline" className="rounded-full border-background/40 bg-transparent text-background hover:bg-background/10 hover:text-background" disabled={pauseHrs > 0 || setLimit.isPending} onClick={() => setLimit.mutate({ pause_hours: 48 })}>
+                {pauseHrs > 0 ? `Paused · ${pauseHrs} hrs left` : "Pause 48 hours"}
               </Button>
               <Button variant="outline" className="rounded-full border-background/40 bg-transparent text-background hover:bg-background/10 hover:text-background" asChild>
                 <Link to="/help">Talk to someone</Link>
@@ -77,12 +109,18 @@ function Dashboard() {
               Why am I seeing this? <ChevronDown className={`h-4 w-4 transition-transform ${why ? "rotate-180" : ""}`} />
             </button>
             {why && (
-              <ul className="mt-3 space-y-1 text-sm opacity-80">
-                <li>· {flagged.length} payments look like betting or betting top-ups in the last 10 days ({gbp(flagged.reduce((a, t) => a + t.amount, 0))}).</li>
-                <li>· Two Sky Bet top-ups within 30 minutes, after 11pm.</li>
-                <li>· Your balance is falling faster than usual before payday.</li>
-                <li><Link to="/transactions" className="underline">Review flagged transactions</Link></li>
-              </ul>
+              <div className="mt-3 space-y-1 text-sm opacity-80">
+                <p>· At your current pace (about {gbp(Math.round(base.gambling_weekly_pace))} a week on betting), your typical balance on rent day is {rentP50 != null ? gbp(Math.round(rentP50)) : "unknown"}, with a {Math.round(base.shortfall_probability * 100)}% chance of going short.</p>
+                <p>· With a £{sugg} weekly limit: {withLimit.balance_at_next_big_bill ? gbp(Math.round(withLimit.balance_at_next_big_bill.p50)) : "—"}, {Math.round(withLimit.shortfall_probability * 100)}% chance.</p>
+                {c.evidence.gambling_change_pct != null && <p>· Betting spend is up {c.evidence.gambling_change_pct}% on the previous 4 weeks.</p>}
+                <ul className="mt-2 space-y-0.5">
+                  {c.evidence.flagged.slice(0, 5).map((f) => (
+                    <li key={f.transaction_id}>· {shortDate(f.posted_at)} {f.description} {gbp(f.amount)}: {f.reason}</li>
+                  ))}
+                </ul>
+                <Link to="/transactions" className="inline-block pt-1 underline">Review flagged transactions</Link>
+                <p className="pt-1 text-xs opacity-70">{c.message.source === "llm" ? "Written by AI using only numbers BetCheck calculated." : "Standard message (AI not used)."}</p>
+              </div>
             )}
           </Panel>
 
@@ -91,17 +129,21 @@ function Dashboard() {
               <h2 className="text-lg font-semibold">Recent bet checks</h2>
               <Link to="/account" className="text-sm text-muted-foreground underline underline-offset-4">All checks</Link>
             </div>
-            <ul className="divide-y divide-border">
-              {state.checks.slice(0, 4).map((c) => (
-                <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
-                  <div>
-                    <p className="font-medium">{c.market}</p>
-                    <p className="text-sm text-muted-foreground">{c.at} · {gbp(c.stake)} stake</p>
-                  </div>
-                  <VerdictPill verdict={c.verdict} />
-                </li>
-              ))}
-            </ul>
+            {checks.isPending ? <p className="text-sm text-muted-foreground">Loading…</p> : !checks.data?.length ? (
+              <p className="text-sm text-muted-foreground">No checks yet. Try one below.</p>
+            ) : (
+              <ul className="divide-y divide-border">
+                {checks.data.slice(0, 4).map((k) => (
+                  <li key={k.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
+                    <div>
+                      <p className="font-medium">{k.market}</p>
+                      <p className="text-sm text-muted-foreground">{when(k.at)} · {gbp(k.stake)} stake</p>
+                    </div>
+                    <StatusPill status={k.status} />
+                  </li>
+                ))}
+              </ul>
+            )}
           </Panel>
 
           <Panel>
@@ -124,30 +166,26 @@ function Dashboard() {
         <div className="space-y-6">
           <Panel>
             <h2 className="text-lg font-semibold">Need a break?</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Pause checks for 48 hours or change your limits.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Pause for 48 hours or change your limits.</p>
             <div className="mt-4 grid gap-2">
-              <Button
-                className="rounded-full"
-                disabled={pauseHrs > 0}
-                onClick={() => update((s) => ({ ...s, pauseUntil: Date.now() + 48 * 3_600_000 }))}
-              >
+              <Button className="rounded-full" disabled={pauseHrs > 0 || setLimit.isPending} onClick={() => setLimit.mutate({ pause_hours: 48 })}>
                 {pauseHrs > 0 ? `Paused · ${pauseHrs} hrs left` : "Take a 48-hour break"}
               </Button>
               <Button asChild variant="secondary" className="rounded-full">
-                <Link to="/limits">{raiseHrs > 0 ? `Limit change in ${raiseHrs} hrs` : "Change limits"}</Link>
+                <Link to="/limits">{raisePending ? "Limit change pending" : "Change limits"}</Link>
               </Button>
             </div>
             <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
-              <div><dt className="text-muted-foreground">Weekly limit</dt><dd className="font-semibold num">{state.limits.weekly != null ? gbp(state.limits.weekly) : "Not set"}</dd></div>
-              <div><dt className="text-muted-foreground">Per bet</dt><dd className="font-semibold num">{state.limits.perBet != null ? gbp(state.limits.perBet) : "Not set"}</dd></div>
+              <div><dt className="text-muted-foreground">Weekly limit</dt><dd className="font-semibold num">{lim?.weekly_gambling_limit != null ? gbp(Number(lim.weekly_gambling_limit)) : "Not set"}</dd></div>
+              <div><dt className="text-muted-foreground">Per bet</dt><dd className="font-semibold num">{lim?.per_bet_max != null ? gbp(Number(lim.per_bet_max)) : "Not set"}</dd></div>
             </dl>
           </Panel>
 
-          {highRisk && (
+          {(highRisk || c.message.support_link) && (
             <Panel className="border-risk bg-risk-soft">
               <p className="text-xs font-semibold uppercase tracking-widest text-risk">Heads up</p>
               <h2 className="mt-1 text-lg font-bold">You are not currently in the position to make a bet.</h2>
-              <p className="mt-1 text-sm">Rent is due in 21 days and your forecast is below £0. Free, confidential help is available.</p>
+              <p className="mt-1 text-sm">Your rent-day forecast is below £0. Free, confidential help is available.</p>
               <ul className="mt-4 space-y-2">
                 {support.slice(0, 2).map((s) => (
                   <li key={s.name}>
