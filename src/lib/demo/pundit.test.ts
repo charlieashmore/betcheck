@@ -22,6 +22,6 @@ describe("Pundit overlay check requests", () => {
   });
 
   it("omits bookmaker odds for the Bank of England market so no benchmark is shown", () => {
-    expect(ticketCheckBody({ market: boe, side: "yes", stake: 10 }).bookmaker_odds).toBeUndefined();
+    expect(ticketCheckBody({ market: boe, side: "yes", stake: 10 })["bookmaker_odds"]).toBeUndefined();
   });
 });
