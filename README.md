@@ -1,6 +1,6 @@
-# kalshi-safe-betting
+# BetCheck
 
-An informational tool that checks whether a user can afford a proposed Kalshi trade, and whether the Kalshi price lines up with the de-margined consensus of sharp sports-betting markets.
+An informational tool that checks whether a user can afford a proposed stake, and whether the market price lines up with the de-margined consensus of sharp sports-betting markets.
 
 ## Motivation
 
